@@ -273,7 +273,6 @@
   <div class="nav wrap">
     <div class="logo"><span class="badge3d">3D</span> GUI 3D MAKER</div>
     <nav class="links">
-      <a href="#colecao">COLEÇÃO</a>
       <a href="#produtos">PRODUTOS</a>
       <a href="#sobre">O MAKER</a>
       </nav>
@@ -289,8 +288,7 @@
         <span class="eyebrow">Maker &amp; Engenheiro do Futuro</span>
         <h1>IDEIAS QUE<br><span class="accent">GANHAM <br>VIDA</span></h1>
         <p class="lead">Impressões 3D criadas por quem entende de diversão.<br></br>
-		<b>Coleção</b> (Edição Limitada)<br></br>
-		<b>Brinquedos</b> Articulados | Sensoriais<br></br>
+			<b>Brinquedos</b> Articulados | Sensoriais<br></br>
 		<b>Personalizados</b>	Corporativos | Festas</p><br></br>
         <div class="cta-row">
           <a class="btn btn-primary" href="#colecao"><span class="fill"></span><span class="label">Coleção</span></a>
@@ -427,17 +425,17 @@ function waLink(product, price){
 }
 
 const products = [
-  {
-    name: "Taça Copa 2026",
-    price: "70",
-    tag: "Edição Limitada",
-    cat: "copa",
-    img: "images/taca-copa.jpg",
-    desc: "Impressão em PLA com acabamento metalizado dourado (tamanho 23,8cm).",
-    checkout: "https://mpago.la/2tHWWbC" // cole o link do Mercado Pago aqui
-  },
-  {
-    name: "Brinquedo Sensorial (Snake)",
+ {
+    name: "Sensorial 10 pontas",
+    price: "30",
+    tag: "Sensorial",
+    cat: "brinquedos",
+    img: "images/10pontas-sensorial-azul-claro-1.jpeg",
+    desc: "Peça já o seu Sensorial!",
+    checkout: "https://mpago.la/2tHWWbC"
+  },  
+{
+ name: "Brinquedo Sensorial (Snake)",
     price: "15",
     tag: "Sensorial",
     cat: "brinquedos",
@@ -451,7 +449,16 @@ const products = [
     tag: "Suporte",
     cat: "suportes",
     img: "images/suporte-celular1.jpeg",
-    desc: "Suporte compacto para celulares. ",
+    desc: "Suporte compacto para celular. ",
+    checkout: "https://mpago.la/13QmK6Y"
+  },
+  {
+    name: "Suporte para Celular",
+    price: "15",
+    tag: "Suporte",
+    cat: "suportes",
+    img: "images/suporte-celular3.jpeg",
+    desc: "Peça já o seu!",
     checkout: "https://mpago.la/13QmK6Y"
   },
   {
@@ -472,42 +479,33 @@ const products = [
     desc: "Personalizados Corporativos e Festas!",
     checkout: ""
   },
+   {
+    name: "Suporte para Celular",
+    price: "15",
+    tag: "Suporte",
+    cat: "suportes",
+    img: "images/suporte-celular2.jpeg",
+    desc: "Peça já o seu!",
+    checkout: "https://mpago.la/13QmK6Y"
+  },
   {
     name: "Chaveiro Personalizado — Nome",
     price: "15",
     tag: "Personalizado",
     cat: "personalizados",
-    img: "images/chaveiro-noah.jpg",
-    desc: "Personalizamos com seu nome ou sua marca!",
-    checkout: ""
-  },
-    {
-    name: "Chaveiro Personalizado — Polo",
-    price: "15",
-    tag: "Personalizado",
-    cat: "personalizados",
-    img: "images/chaveiro-polo.jpeg",
+    img: "images/chaveiro-jose.jpeg",
     desc: "Entre em contato e peça o seu!",
     checkout: ""
   },
   {
-    name: "Sensorial 10 pontas",
-    price: "30",
+    name: "Sensorial Snake",
+    price: "15",
     tag: "Sensorial",
     cat: "brinquedos",
-    img: "images/10pontas-sensorial-azul-claro-1.jpeg",
-    desc: "Peça já o seu Sensorial!",
-    checkout: ""
+    img: "images/sensorial-snake.jpeg",
+    desc: "Personalizados Corporativos e Festas!",
+    checkout: "https://mpago.la/1wruf7u"
   },
-  {
-    name: "Chaveiro Personalizado — Toyota",
-    price: "15",
-    tag: "Personalizado",
-    cat: "personalizados",
-    img: "images/chaveiro-toyota.jpeg",
-    desc: "Personalizamos com a marca ou modelo do seu carro!",
-    checkout: ""
-  }
 ];
 
 const grid = document.getElementById("grid");
