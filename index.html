@@ -5,22 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gui 3D Maker — Impressões 3D criadas por quem entende de diversão</title>
 <meta name="description" content="Impressões 3D criadas por quem entende de diversão">
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/favicon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0B0D10;
-    --paper:#171B1F;
-    --ink:#F4F6F5;
-    --ink-soft:#9AA5A0;
-    --green:#39FF88;
-    --green-deep:#1F9E5B;
-    --gold:#FFB020;
-    --gold-deep:#CC8A00;
-    --coral:#FF3D81;
-    --line:#232A24;
-    --shadow: 0 10px 30px -12px rgba(0,0,0,0.6);
+    /* Paleta clara "premium clean" — --green/--green-deep agora representam o azul
+       principal da marca (extraído da logo); nomes mantidos para não quebrar o CSS. */
+    --bg:#FFFFFF;
+    --paper:#F3F4F7;
+    --ink:#14161C;
+    --ink-soft:#667085;
+    --green:#2F5FE0;
+    --green-deep:#1E3FAE;
+    --gold:#C98A2B;
+    --gold-deep:#A66F1E;
+    --coral:#E2547A;
+    --line:#E6E8EC;
+    --shadow: 0 10px 30px -12px rgba(20,20,40,.14);
     --radius: 14px;
   }
   *{box-sizing:border-box;}
@@ -37,7 +42,7 @@
     position:fixed;
     inset:0;
     background-image:
-      radial-gradient(circle, rgba(57,255,136,0.08) 1px, transparent 1px);
+      radial-gradient(circle, rgba(47,95,224,0.07) 1px, transparent 1px);
     background-size: 26px 26px;
     pointer-events:none;
     z-index:0;
@@ -60,13 +65,13 @@
     content:"";
     width:8px;height:8px;border-radius:50%;
     background:var(--coral);
-    box-shadow:0 0 0 3px rgba(255,61,129,.18);
+    box-shadow:0 0 0 3px rgba(226,84,122,.18);
   }
 
   /* Header */
   header{
     position:sticky; top:0; z-index:50;
-    background:rgba(11,13,16,.86);
+    background:rgba(255,255,255,.86);
     backdrop-filter: blur(10px);
     border-bottom:1px solid var(--line);
   }
@@ -74,26 +79,34 @@
     display:flex; align-items:center; justify-content:space-between;
     padding:16px 24px;
   }
-  .logo{ display:flex; align-items:center; gap:10px; font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.01em; font-size:1.25rem; }
-  .logo .badge3d{
-    width:34px;height:34px;border-radius:10px;
-    background:linear-gradient(135deg,var(--green),var(--green-deep));
-    color:#06110A; display:flex; align-items:center; justify-content:center;
-    font-family:'Space Mono'; font-weight:700; font-size:.85rem;
-    box-shadow: 0 4px 10px -3px rgba(31,158,91,.6);
-    transform: rotate(-4deg);
-  }
+  .logo{ display:flex; align-items:center; gap:11px; font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.01em; font-size:1.25rem; }
+  .logo img.brand-mark{ height:38px; width:auto; display:block; }
   nav.links{ display:flex; gap:28px; font-weight:600; font-size:.94rem;}
   nav.links a{ color:var(--ink-soft); transition:color .2s; }
   nav.links a:hover{ color:var(--green); }
   .nav-cta{
-    background:var(--green); color:#06110A; padding:10px 18px; border-radius:100px;
+    background:var(--green); color:#FFFFFF; padding:10px 18px; border-radius:100px;
     font-weight:700; font-size:.88rem; display:flex; align-items:center; gap:8px;
   }
   .menu-toggle{ display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--ink);}
 
   /* Hero */
   .hero{ padding:76px 0 40px; position:relative; overflow:hidden;}
+  .hero-copy{ position:relative; }
+  .hero-title{ position:relative; display:table; }
+  .hero-watermark{
+    position:absolute;
+    left:44%; top:50%;
+    width:420px; height:auto;
+    transform:translate(-50%,-50%);
+    opacity:.14;
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+  }
+  @media (max-width:860px){
+    .hero-watermark{ width:230px; top:140px; transform:translate(-50%,0); }
+  }
   .hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;}
   .hero h1{
     font-size:clamp(2.6rem, 5.4vw, 4.4rem);
@@ -116,8 +129,8 @@
   }
   .btn:active{ transform:scale(.97); }
   .btn-primary{
-    background:var(--gold); color:#241800;
-    box-shadow: 0 10px 24px -10px rgba(255,176,32,.7);
+    background:var(--gold); color:#2A1B05;
+    box-shadow: 0 10px 24px -10px rgba(201,138,43,.45);
   }
   .btn-primary span.fill{
     position:absolute; left:0; top:0; bottom:0; width:0%;
@@ -125,11 +138,11 @@
   }
   .btn-primary:hover span.fill{ width:100%; }
   .btn-primary .label{ position:relative; z-index:1; display:flex; align-items:center; gap:8px;}
-  .btn-primary:hover{ box-shadow:0 14px 28px -10px rgba(204,138,0,.8); }
+  .btn-primary:hover{ box-shadow:0 14px 28px -10px rgba(166,111,30,.5); }
   .btn-outline{
     background:transparent; color:var(--ink); border:2px solid var(--green);
   }
-  .btn-outline:hover{ background:var(--green); color:#06110A; }
+  .btn-outline:hover{ background:var(--green); color:#FFFFFF; }
   .btn-whatsapp{
     background:#1F8A57; color:#fff;
   }
@@ -139,7 +152,7 @@
   .hero-photo{
     width:100%; aspect-ratio:1/1.05; border-radius:26px; overflow:hidden;
     border:6px solid var(--paper); box-shadow:var(--shadow);
-    background: linear-gradient(160deg, #171B1F, #0E1013);
+    background: linear-gradient(160deg, #F1F2F5, #E4E6EA);
     position:relative;
   }
   .hero-photo img{ width:100%; height:100%; object-fit:cover; display:block;}
@@ -155,7 +168,7 @@
     position:absolute; top:20px; right:-14px;
     background:var(--coral); color:#fff; padding:8px 14px; border-radius:100px;
     font-family:'Space Mono'; font-size:.72rem; font-weight:700;
-    box-shadow: 0 8px 18px -8px rgba(255,61,129,.7);
+    box-shadow: 0 8px 18px -8px rgba(226,84,122,.5);
     transform: rotate(4deg);
   }
 
@@ -173,19 +186,19 @@
     color:var(--ink-soft); transition:all .2s;
   }
   .filter-btn.active, .filter-btn:hover{
-    background:var(--green); border-color:var(--green); color:#06110A;
+    background:var(--green); border-color:var(--green); color:#FFFFFF;
   }
 
   /* Product grid */
   .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
   .card{
     background:var(--paper); border-radius:var(--radius); overflow:hidden;
-    border:1px solid var(--line); box-shadow: 0 6px 18px -12px rgba(11,40,26,.18);
+    border:1px solid var(--line); box-shadow: 0 6px 18px -12px rgba(20,20,40,.12);
     display:flex; flex-direction:column;
     transition:transform .22s ease, box-shadow .22s ease;
   }
   .card:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
-  .card-img{ position:relative; aspect-ratio:4/3; background:#12161A; overflow:hidden;}
+  .card-img{ position:relative; aspect-ratio:4/3; background:#EEF0F3; overflow:hidden;}
   .card-img img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease;}
   .card:hover .card-img img{ transform:scale(1.06); }
   .card-tag{
@@ -199,8 +212,8 @@
   .price{ font-family:'Space Mono'; font-weight:700; font-size:1.15rem; color:var(--green);}
   .buy-btn{
     display:inline-flex; align-items:center; gap:6px; padding:10px 16px; border-radius:100px;
-    background:var(--gold); color:#241800; font-weight:700; font-size:.84rem; border:none; cursor:pointer;
-    box-shadow:0 8px 16px -8px rgba(255,176,32,.7); white-space:nowrap;
+    background:var(--gold); color:#2A1B05; font-weight:700; font-size:.84rem; border:none; cursor:pointer;
+    box-shadow:0 8px 16px -8px rgba(201,138,43,.45); white-space:nowrap;
   }
   .buy-btn:hover{ background:var(--gold-deep); }
   .buy-btn.wa{ background:#1F8A57; color:#fff; box-shadow:0 8px 16px -8px rgba(31,138,87,.6); }
@@ -214,7 +227,7 @@
   }
   .step .step-num{
     font-family:'Space Mono'; font-weight:700; font-size:.8rem; color:var(--coral);
-    background:rgba(255,61,129,.12); display:inline-block; padding:4px 10px; border-radius:8px; margin-bottom:14px;
+    background:rgba(226,84,122,.10); display:inline-block; padding:4px 10px; border-radius:8px; margin-bottom:14px;
   }
   .step h3{ font-size:1.15rem; margin-bottom:8px;}
   .step p{ color:var(--ink-soft); font-size:.92rem; line-height:1.5; margin:0;}
@@ -229,11 +242,11 @@
   .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:52px; align-items:center; position:relative; z-index:1;}
   .about img{ width:100%; border-radius:18px; box-shadow:0 20px 40px -14px rgba(0,0,0,.5);}
   .about h2{ font-size:clamp(1.8rem,3vw,2.3rem); margin-bottom:16px;}
-  .about p{ color:#E8FFF3; line-height:1.7; margin-bottom:14px;}
+  .about p{ color:#E3EAFF; line-height:1.7; margin-bottom:14px;}
   .about-stats{ display:flex; gap:28px; margin-top:24px;}
   .about-stats div{ }
   .about-stats .n{ font-family:'Space Mono'; font-weight:700; font-size:1.5rem; color:var(--gold);}
-  .about-stats .l{ font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; color:#9FEFC5;}
+  .about-stats .l{ font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; color:#B9C8FF;}
 
   /* Final CTA */
   .final-cta{ text-align:center; padding:80px 24px;}
@@ -248,7 +261,7 @@
   }
   .insta-grid .insta-card{
     background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
-    box-shadow:0 6px 18px -12px rgba(11,40,26,.18); overflow:hidden;
+    box-shadow:0 6px 18px -12px rgba(20,20,40,.12); overflow:hidden;
     display:flex; align-items:center; justify-content:center; min-height:420px;
   }
   .insta-grid blockquote.instagram-media{ margin:0 !important; width:100% !important; }
@@ -263,6 +276,7 @@
   footer{ border-top:1px solid var(--line); padding:36px 0; }
   .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
   .foot-row .logo{ font-size:1.05rem; }
+  .foot-row .logo img.brand-mark{ height:30px; }
   .foot-links{ display:flex; gap:20px; font-size:.86rem; color:var(--ink-soft); font-weight:600;}
   .credit{ font-size:.78rem; color:var(--ink-soft); margin-top:18px; text-align:center;}
   .credit a{ text-decoration:underline; }
@@ -289,7 +303,7 @@
 
 <header>
   <div class="nav wrap">
-    <div class="logo"><span class="badge3d">3D</span> GUI 3D MAKER</div>
+    <a class="logo" href="#" aria-label="Gui 3D Maker — início"><img class="brand-mark" src="images/gui3d-icon.png" alt="Gui 3D Maker"> GUI3D MAKER</a>
     <nav class="links">
       <a href="#produtos">PRODUTOS</a>
       <a href="#sobre">O MAKER</a>
@@ -302,10 +316,13 @@
 <main>
   <!-- HERO -->
   <section class="hero">
+    <img class="hero-watermark" src="images/gui3d-icon.png" alt="" aria-hidden="true">
     <div class="wrap hero-grid">
-      <div>
+      <div class="hero-copy">
         <span class="eyebrow">Maker &amp; Engenheiro do Futuro</span>
-        <h1>IDEIAS QUE<br><span class="accent">GANHAM <br>VIDA</span></h1>
+        <div class="hero-title">
+          <h1>IDEIAS QUE<br><span class="accent">GANHAM <br>VIDA</span></h1>
+        </div>
         <p class="lead">Impressões 3D criadas por quem entende de diversão.<br></br>
 			<b>Brinquedos</b> Articulados | Sensoriais<br></br>
 		<b>Personalizados</b>	Corporativos | Festas</p><br></br>
@@ -380,7 +397,7 @@
       <div class="about">
         <div class="about-grid">
           <div>
-            <span class="eyebrow" style="color:#F2A900;">A história por trás da impressora</span>
+            <span class="eyebrow" style="color:#F2C572;">A história por trás da impressora</span>
             <h2>DE BRINCAR COM PEÇAS DE MONTAR A CRIAR AS PRÓPRIAS PEÇAS</h2>
             <p>Tudo começou com o gosto de brincar com peças de montar. Aos 6 anos participei de um curso de robótica na escola e passei a assistir vídeos de impressão 3D — a curiosidade virou paixão, e resolvi juntar minhas economias e pedir ajuda aos meus pais para comprar uma impressora 3D.</p>
             <p>Com a chegada da impressora, fomos aprendendo juntos. Hoje eu mesmo preparo os arquivos, troco o filamento e cuido de cada detalhe da produção.</p> 
@@ -450,7 +467,7 @@
 <footer>
   <div class="wrap">
     <div class="foot-row">
-      <div class="logo"><span class="badge3d">3D</span> GUI 3D MAKER © 2026</div>
+      <div class="logo"><img class="brand-mark" src="images/gui3d-icon.png" alt="Gui 3D Maker"> GUI3D MAKER © 2026</div>
       <div class="foot-links">
         <a href="https://www.instagram.com/gui3dmaker/" target="_blank">INSTAGRAM</a>
         <a href="https://www.youtube.com/@gui3dmaker/" target="_blank">YOUTUBE</a>
