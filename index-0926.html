@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gui 3D Maker — Impressões 3D criadas por quem entende de diversão</title>
+<meta name="description" content="Impressões 3D criadas por quem entende de diversão">
+<link rel="icon" type="image/png" href="images/favicon-32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="images/favicon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="images/favicon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Paleta clara "premium clean" — --green/--green-deep agora representam o azul
+       principal da marca (extraído da logo); nomes mantidos para não quebrar o CSS. */
+    --bg:#FFFFFF;
+    --paper:#F3F4F7;
+    --ink:#14161C;
+    --ink-soft:#667085;
+    --green:#2F5FE0;
+    --green-deep:#1E3FAE;
+    --gold:#C98A2B;
+    --gold-deep:#A66F1E;
+    --coral:#E2547A;
+    --line:#E6E8EC;
+    --shadow: 0 10px 30px -12px rgba(20,20,40,.14);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      radial-gradient(circle, rgba(47,95,224,0.07) 1px, transparent 1px);
+    background-size: 26px 26px;
+    pointer-events:none;
+    z-index:0;
+  }
+  h1,h2,h3{ font-family:'Space Grotesk',ui-sans-serif,system-ui,sans-serif; font-weight:700; margin:0; line-height:1.05; letter-spacing:-0.01em;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1140px; margin:0 auto; padding:0 24px; position:relative; z-index:1;}
+  .mono{font-family:'Space Mono',monospace;}
+  .eyebrow{
+    font-family:'Space Mono',monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--green);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--coral);
+    box-shadow:0 0 0 3px rgba(226,84,122,.18);
+  }
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,.86);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 24px;
+  }
+  .logo{ display:flex; align-items:center; gap:11px; font-family:'Space Grotesk'; font-weight:700; letter-spacing:-0.01em; font-size:1.25rem; }
+  .logo img.brand-mark{ height:38px; width:auto; display:block; }
+  nav.links{ display:flex; gap:28px; font-weight:600; font-size:.94rem;}
+  nav.links a{ color:var(--ink-soft); transition:color .2s; }
+  nav.links a:hover{ color:var(--green); }
+  .nav-cta{
+    background:var(--green); color:#FFFFFF; padding:10px 18px; border-radius:100px;
+    font-weight:700; font-size:.88rem; display:flex; align-items:center; gap:8px;
+  }
+  .menu-toggle{ display:none; background:none; border:none; font-size:1.5rem; cursor:pointer; color:var(--ink);}
+
+  /* Hero */
+  .hero{ padding:76px 0 40px; position:relative; overflow:hidden;}
+  .hero-copy{ position:relative; }
+  .hero-title{ position:relative; display:table; }
+  .hero-watermark{
+    position:absolute;
+    left:44%; top:50%;
+    width:420px; height:auto;
+    transform:translate(-50%,-50%);
+    opacity:.14;
+    pointer-events:none;
+    user-select:none;
+    z-index:0;
+  }
+  @media (max-width:860px){
+    .hero-watermark{ width:230px; top:140px; transform:translate(-50%,0); }
+  }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;}
+  .hero h1{
+    font-size:clamp(2.6rem, 5.4vw, 4.4rem);
+    font-weight:800;
+    color:var(--ink);
+    margin:18px 0 20px;
+  }
+  .hero h1 .accent{
+    color:var(--green);
+    position:relative;
+    display:inline-block;
+  }
+  .hero p.lead{ font-size:1.14rem; color:var(--ink-soft); max-width:46ch; margin-bottom:30px;}
+  .cta-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 26px; border-radius:100px; font-weight:700; font-size:.96rem;
+    border:none; cursor:pointer; position:relative; overflow:hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .btn:active{ transform:scale(.97); }
+  .btn-primary{
+    background:var(--gold); color:#2A1B05;
+    box-shadow: 0 10px 24px -10px rgba(201,138,43,.45);
+  }
+  .btn-primary span.fill{
+    position:absolute; left:0; top:0; bottom:0; width:0%;
+    background:var(--gold-deep); z-index:0; transition:width .35s ease;
+  }
+  .btn-primary:hover span.fill{ width:100%; }
+  .btn-primary .label{ position:relative; z-index:1; display:flex; align-items:center; gap:8px;}
+  .btn-primary:hover{ box-shadow:0 14px 28px -10px rgba(166,111,30,.5); }
+  .btn-outline{
+    background:transparent; color:var(--ink); border:2px solid var(--green);
+  }
+  .btn-outline:hover{ background:var(--green); color:#FFFFFF; }
+  .btn-whatsapp{
+    background:#1F8A57; color:#fff;
+  }
+  .btn-whatsapp:hover{ background:#166b42; }
+
+  .hero-photo-wrap{ position:relative; }
+  .hero-photo{
+    width:100%; aspect-ratio:1/1.05; border-radius:26px; overflow:hidden;
+    border:6px solid var(--paper); box-shadow:var(--shadow);
+    background: linear-gradient(160deg, #F1F2F5, #E4E6EA);
+    position:relative;
+  }
+  .hero-photo img{ width:100%; height:100%; object-fit:cover; display:block;}
+  .layer-tag{
+    position:absolute; bottom:-18px; left:-18px;
+    background:var(--paper); border-radius:16px; padding:14px 18px;
+    box-shadow:var(--shadow); border:1px solid var(--line);
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .layer-tag .num{ font-family:'Space Mono'; font-weight:700; font-size:1.5rem; color:var(--green);}
+  .layer-tag .lab{ font-size:.76rem; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; font-weight:700;}
+  .spec-chip{
+    position:absolute; top:20px; right:-14px;
+    background:var(--coral); color:#fff; padding:8px 14px; border-radius:100px;
+    font-family:'Space Mono'; font-size:.72rem; font-weight:700;
+    box-shadow: 0 8px 18px -8px rgba(226,84,122,.5);
+    transform: rotate(4deg);
+  }
+
+  /* Sections generic */
+  section{ padding:88px 0; position:relative;}
+  .section-head{ max-width:640px; margin-bottom:44px;}
+  .section-head h2{ font-size:clamp(2rem,3.6vw,2.7rem); margin-top:14px; }
+  .section-head p{ color:var(--ink-soft); font-size:1.02rem; margin-top:12px;}
+
+  /* Filters */
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:34px;}
+  .filter-btn{
+    padding:9px 18px; border-radius:100px; border:1.5px solid var(--line);
+    background:var(--paper); font-weight:700; font-size:.86rem; cursor:pointer;
+    color:var(--ink-soft); transition:all .2s;
+  }
+  .filter-btn.active, .filter-btn:hover{
+    background:var(--green); border-color:var(--green); color:#FFFFFF;
+  }
+
+  /* Product grid */
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  .card{
+    background:var(--paper); border-radius:var(--radius); overflow:hidden;
+    border:1px solid var(--line); box-shadow: 0 6px 18px -12px rgba(20,20,40,.12);
+    display:flex; flex-direction:column;
+    transition:transform .22s ease, box-shadow .22s ease;
+  }
+  .card:hover{ transform:translateY(-6px); box-shadow:var(--shadow); }
+  .card-img{ position:relative; aspect-ratio:4/3; background:#EEF0F3; overflow:hidden;}
+  .card-img img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease;}
+  .card:hover .card-img img{ transform:scale(1.06); }
+  .card-tag{
+    position:absolute; top:12px; left:12px; background:rgba(6,17,10,.82); color:#fff;
+    font-size:.7rem; font-weight:700; padding:5px 10px; border-radius:100px; letter-spacing:.03em;
+  }
+  .card-body{ padding:20px 20px 22px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .card-body h3{ font-size:1.16rem; }
+  .card-body .desc{ color:var(--ink-soft); font-size:.9rem; line-height:1.5; flex:1;}
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:10px;}
+  .price{ font-family:'Space Mono'; font-weight:700; font-size:1.15rem; color:var(--green);}
+  .buy-btn{
+    display:inline-flex; align-items:center; gap:6px; padding:10px 16px; border-radius:100px;
+    background:var(--gold); color:#2A1B05; font-weight:700; font-size:.84rem; border:none; cursor:pointer;
+    box-shadow:0 8px 16px -8px rgba(201,138,43,.45); white-space:nowrap;
+  }
+  .buy-btn:hover{ background:var(--gold-deep); }
+  .buy-btn.wa{ background:#1F8A57; color:#fff; box-shadow:0 8px 16px -8px rgba(31,138,87,.6); }
+  .buy-btn.wa:hover{ background:#166b42; }
+
+  /* Process */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  .step{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px 24px; position:relative;
+  }
+  .step .step-num{
+    font-family:'Space Mono'; font-weight:700; font-size:.8rem; color:var(--coral);
+    background:rgba(226,84,122,.10); display:inline-block; padding:4px 10px; border-radius:8px; margin-bottom:14px;
+  }
+  .step h3{ font-size:1.15rem; margin-bottom:8px;}
+  .step p{ color:var(--ink-soft); font-size:.92rem; line-height:1.5; margin:0;}
+
+  /* About */
+  .about{ background:var(--green-deep); color:#fff; border-radius:28px; margin:0 24px; padding:64px 48px; overflow:hidden; position:relative;}
+  .about::before{
+    content:""; position:absolute; inset:0; opacity:.15;
+    background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+    background-size:22px 22px;
+  }
+  .about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:52px; align-items:center; position:relative; z-index:1;}
+  .about img{ width:100%; border-radius:18px; box-shadow:0 20px 40px -14px rgba(0,0,0,.5);}
+  .about h2{ font-size:clamp(1.8rem,3vw,2.3rem); margin-bottom:16px;}
+  .about p{ color:#E3EAFF; line-height:1.7; margin-bottom:14px;}
+  .about-stats{ display:flex; gap:28px; margin-top:24px;}
+  .about-stats div{ }
+  .about-stats .n{ font-family:'Space Mono'; font-weight:700; font-size:1.5rem; color:var(--gold);}
+  .about-stats .l{ font-size:.76rem; text-transform:uppercase; letter-spacing:.06em; color:#B9C8FF;}
+
+  /* Final CTA */
+  .final-cta{ text-align:center; padding:80px 24px;}
+  .final-cta .eyebrow{ justify-content:center; }
+  .final-cta h2{ font-size:clamp(2.1rem,4vw,3rem); margin:16px auto 18px; max-width:444ch;}
+  .final-cta p{ color:var(--ink-soft); max-width:548ch; margin:0 auto 30px;}
+  .final-cta .cta-row{ justify-content:center; }
+
+  /* Instagram */
+  .insta-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:26px;
+  }
+  .insta-grid .insta-card{
+    background:var(--paper); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:0 6px 18px -12px rgba(20,20,40,.12); overflow:hidden;
+    display:flex; align-items:center; justify-content:center; min-height:420px;
+  }
+  .insta-grid blockquote.instagram-media{ margin:0 !important; width:100% !important; }
+  .insta-cta{ display:flex; justify-content:center; margin-top:36px; }
+  @media (max-width: 880px){
+    .insta-grid{ grid-template-columns:repeat(2,1fr); }
+  }
+  @media (max-width: 560px){
+    .insta-grid{ grid-template-columns:1fr; }
+  }
+
+  footer{ border-top:1px solid var(--line); padding:36px 0; }
+  .foot-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;}
+  .foot-row .logo{ font-size:1.05rem; }
+  .foot-row .logo img.brand-mark{ height:30px; }
+  .foot-links{ display:flex; gap:20px; font-size:.86rem; color:var(--ink-soft); font-weight:600;}
+  .credit{ font-size:.78rem; color:var(--ink-soft); margin-top:18px; text-align:center;}
+  .credit a{ text-decoration:underline; }
+
+  @media (max-width: 880px){
+    nav.links, .menu-toggle{ display:none; }
+    .hero-grid{ grid-template-columns:1fr; }
+    .about-grid{ grid-template-columns:1fr; }
+    .grid{ grid-template-columns:repeat(2,1fr); }
+    .steps{ grid-template-columns:1fr; }
+    .about{ margin:0 12px; padding:40px 24px; }
+  }
+  @media (max-width: 560px){
+    .grid{ grid-template-columns:1fr; }
+    .hero{ padding:52px 0 24px; }
+    .cta-row .btn{ flex:1; justify-content:center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <a class="logo" href="#" aria-label="Gui 3D Maker — início"><img class="brand-mark" src="images/gui3d-icon.png" alt="Gui 3D Maker"> GUI3D MAKER</a>
+    <nav class="links">
+      <a href="#produtos">PRODUTOS</a>
+      <a href="#sobre">O MAKER</a>
+      <a href="#instagram">INSTAGRAM</a>
+      </nav>
+    <a class="nav-cta" href="#contato">WhatsApp</a>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <img class="hero-watermark" src="images/gui3d-icon.png" alt="" aria-hidden="true">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">Maker &amp; Engenheiro do Futuro</span>
+        <div class="hero-title">
+          <h1>IDEIAS QUE<br><span class="accent">GANHAM <br>VIDA</span></h1>
+        </div>
+        <p class="lead">Impressões 3D criadas por quem entende de diversão.<br></br>
+			<b>Brinquedos</b> Articulados | Sensoriais<br></br>
+		<b>Personalizados</b>	Corporativos | Festas</p><br></br>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#colecao"><span class="fill"></span><span class="label">Coleção</span></a>
+          <a class="btn btn-outline" href="#contato">Fazer Encomenda</a>
+        </div>
+      </div>
+      <div class="hero-photo-wrap">
+        <div class="hero-photo">
+          <img src="images/gui3dmaker.png" alt="Gui 3D Maker">
+        </div>
+        <span class="spec-chip">PLA · 0.1mm</span>
+        <div class="layer-tag">
+          <span class="num">+500</span>
+          <span class="lab">Peças entregues</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="colecao">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Galeria de Projetos</span>
+        <h2 id="produtos">CLIQUE E RECEBA EM CASA</h2>
+        <p>Cada peça é fatiada, impressa e revisada. Filtre por categoria e clique em Comprar para ir direto ao pagamento — ou combine tudo pelo WhatsApp no caso dos produtos personalizados.</p>
+      </div>
+
+      <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <button class="filter-btn" data-filter="brinquedos">Brinquedos</button>
+        <button class="filter-btn" data-filter="corporativos">Corporativos</button>
+        <button class="filter-btn" data-filter="personalizados">Personalizados</button>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Como Encomendar</span>
+        <h2>DO CLIQUE À SUA CASA EM 3 PASSOS</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-num">01</span>
+          <h3>Escolha seu item</h3>
+          <p>Navegue pelo site ou instagram para escolher o seu produto.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <h3>Compre</h3>
+          <p>Entre em contato via WhatsApp para comprar.</p>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <h3>Receba em casa</h3>
+          <p>Receba no conforto do seu lar, enviamos para todo o Brasil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="sobre">
+    <div class="wrap">
+      <div class="about">
+        <div class="about-grid">
+          <div>
+            <span class="eyebrow" style="color:#F2C572;">A história por trás da impressora</span>
+            <h2>DE BRINCAR COM PEÇAS DE MONTAR A CRIAR AS PRÓPRIAS PEÇAS</h2>
+            <p>Tudo começou com o gosto de brincar com peças de montar. Aos 6 anos participei de um curso de robótica na escola e passei a assistir vídeos de impressão 3D — a curiosidade virou paixão, e resolvi juntar minhas economias e pedir ajuda aos meus pais para comprar uma impressora 3D.</p>
+            <p>Com a chegada da impressora, fomos aprendendo juntos. Hoje eu mesmo preparo os arquivos, troco o filamento e cuido de cada detalhe da produção.</p> 
+			<p>Meu objetivo é mostrar que crianças também podem ser criativas e empreendedoras — cada peça que você compra ajuda a financiar novos projetos!</p>
+            <div class="about-stats">
+              <div><div class="n">PLA</div><div class="l">Material Eco</div></div>
+              <div><div class="n">0.1mm</div><div class="l">Alta Precisão</div></div>
+              <div><div class="n">+500</div><div class="l">Peças Entregues</div></div>
+            </div>
+          </div>
+          <img src="images/logo_gui3d.jpeg" alt="@Gui3Dmaker">
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FINAL CTA -->
+  <section id="contato">
+    <div class="wrap final-cta">
+      <span class="eyebrow">PRONTO PARA CRIAR?</span>
+      <h2>Faça o seu pedido!</h2>
+      <p>Entre encontato via WhatsApp, tire suas dúvidas e faça o seu pedido.</p>
+       <div class="cta-row">
+        <a class="btn btn-whatsapp" href="https://wa.me/5513997272626?text=Ol%C3%A1!%20Gostaria%20de%20saber%20mais%20sobre%20os%20servi%C3%A7os%20e%20produtos%20da%20Gui%203D%20Maker" target="_blank" rel="noopener">💬 Chamar no WhatsApp</a>
+      </div>
+    </div>  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div class="logo"><img class="brand-mark" src="images/gui3d-icon.png" alt="Gui 3D Maker"> GUI3D MAKER © 2026</div>
+      <div class="foot-links">
+        <a href="https://www.instagram.com/gui3dmaker/" target="_blank">INSTAGRAM</a>
+        <a href="https://www.youtube.com/@gui3dmaker/" target="_blank">YOUTUBE</a>
+        <a href="https://ffgtai.github.io/gui3dmaker-site/#" onclick="return false;">TERMOS</a>
+        <a href="https://ffgtai.github.io/ffgdigital/" target="_blank">Site desenvolvido por FFG DIGITAL</a>
+	</div>
+	</div>
+  </div>
+</footer>
+
+<script>
+/* ======================================================================
+   CONFIGURAÇÃO DE PRODUTOS
+   - "checkout": cole aqui o link de pagamento (Mercado Pago Checkout Pro
+     ou Link de Pagamento). Se ficar vazio (""), o botão "Comprar" cai
+     automaticamente para o WhatsApp.
+   - "wa": mensagem pronta pro WhatsApp (fallback / segunda opção).
+   ====================================================================== */
+const WHATSAPP_NUMBER = "5513997272626";
+
+function waLink(product, price){
+  const text = `Olá! Tenho interesse em: ${product} (R$ ${price}). Podemos combinar os detalhes?`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
+}
+
+
+const products = [
+   {
+    name: "Sensorial 10 pontas",
+    price: "35",
+    tag: "Sensorial",
+    cat: "brinquedos",
+    img: "images/10pontas-sensorial-azul-claro-1.jpeg",
+    desc: "Peça já o seu Sensorial!",
+    checkout: "https://mpago.la/2tHWWbC"
+  },  
+    {
+    name: "Sensorial Snake",
+    price: "15",
+    tag: "Sensorial",
+    cat: "brinquedos",
+    img: "images/sensorial-snake.jpeg",
+    desc: "Personalizados Corporativos e Festas!",
+    checkout: "https://mpago.la/1wruf7u"
+  },
+  {
+    name: "Suporte para Celular",
+    price: "15",
+    tag: "Suporte",
+    cat: "corporativos",
+    img: "images/suporte-celular1.jpeg",
+    desc: "Suporte compacto para celular. ",
+    checkout: "https://mpago.la/13QmK6Y"
+  },
+  {
+    name: "Chaveiro Personalizado — Nome",
+    price: "15",
+    tag: "Personalizado",
+    cat: "personalizados",
+    img: "images/chaveiro-paolla.jpg",
+    desc: "Entre em contato e peça o seu!",
+    checkout: ""
+  },
+  {
+    name: "Chaveiro Personalizado — Nome",
+    price: "15",
+    tag: "Personalizado",
+    cat: "personalizados",
+    img: "images/chaveiro-nome-guilherme.jpg",
+    desc: "Personalizados Corporativos e Festas!",
+    checkout: ""
+  },
+   {
+    name: "Chaveiro Personalizado — Nome",
+    price: "15",
+    tag: "Personalizado",
+    cat: "personalizados",
+    img: "images/chaveiro-jose.jpeg",
+    desc: "Entre em contato e peça o seu!",
+    checkout: ""
+  },
+
+];
+
+const grid = document.getElementById("grid");
+
+function render(filter){
+  grid.innerHTML = "";
+  products
+    .filter(p => filter === "todos" || p.cat === filter)
+    .forEach(p => {
+      const buyHref = p.checkout && p.checkout.trim() !== "" ? p.checkout : waLink(p.name, p.price);
+      const buyLabel = p.checkout && p.checkout.trim() !== "" ? "Comprar" : "Comprar (WhatsApp)";
+      const buyClass = p.checkout && p.checkout.trim() !== "" ? "buy-btn" : "buy-btn wa";
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-img">
+          <span class="card-tag">${p.tag}</span>
+          <img src="${p.img}" alt="${p.name}" loading="lazy">
+        </div>
+        <div class="card-body">
+          <h3>${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+          <div class="card-foot">
+            <span class="price">R$ ${p.price}</span>
+            <a class="${buyClass}" href="${buyHref}" target="_blank" rel="noopener">${buyLabel}</a>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+}
+
+document.getElementById("filters").addEventListener("click", (e) => {
+  if(!e.target.classList.contains("filter-btn")) return;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  e.target.classList.add("active");
+  render(e.target.dataset.filter);
+});
+
+render("todos");
+</script>
+
+
+</body>
+</html>
